@@ -1,107 +1,141 @@
 gsap.registerPlugin(ScrollTrigger);
 
+const html = document.documentElement;
+const progressBar = document.getElementById("progressBar");
+const siteHeader = document.getElementById("site-header");
+const replayBtn = document.getElementById("replay-btn") || document.getElementById("replayBtn");
+const darkModeToggle = document.getElementById("theme-toggle") || document.getElementById("darkModeToggle");
+const heroImg = document.getElementById("hero-img") || document.querySelector("#hero .rounded-full");
+const heroTitle = document.getElementById("hero-title") || document.querySelector("#hero h2");
+const heroTagline = document.getElementById("hero-tagline") || document.querySelector("#hero p");
+const heroCta = document.getElementById("hero-cta") || document.querySelector("#hero .flex.gap-3");
+const navLinks = document.querySelectorAll("#nav-links a, nav a");
 
-   defaults, 5 steps, stagger, position overlaps, total ≈ 2s */
 const heroTL = gsap.timeline({
-  defaults: { ease: "power3.out", duration: 0.5 } // power3.out: snappy decel for headline entrance
+  defaults: { ease: "power3.out", duration: 0.5 },
 });
 
-heroTL
-  .from("#hero-img",     { y: -40, opacity: 0, scale: 0.85 })
-  .from("#hero-title",   { y: 30,  opacity: 0 },                 "-=0.25")
-  .from("#hero-tagline", { y: 20,  opacity: 0 },                 "-=0.3")
-  .from("#hero-cta > *", { y: 15,  opacity: 0, stagger: 0.12 }, "-=0.25")
-  .from("#nav-links a",  { y: -15, opacity: 0, stagger: 0.07 }, "<");
+if (heroImg) {
+  heroTL.from(heroImg, { y: -40, opacity: 0, scale: 0.85 });
+}
+if (heroTitle) {
+  heroTL.from(heroTitle, { y: 30, opacity: 0 }, "-=0.25");
+}
+if (heroTagline) {
+  heroTL.from(heroTagline, { y: 20, opacity: 0 }, "-=0.3");
+}
+if (heroCta) {
+  heroTL.from(heroCta.querySelectorAll("a, button"), { y: 15, opacity: 0, stagger: 0.12 }, "-=0.25");
+}
+if (navLinks.length) {
+  heroTL.from(navLinks, { y: -15, opacity: 0, stagger: 0.07 }, "<");
+}
 
+if (heroImg) {
+  gsap.to(heroImg, {
+    y: -10,
+    duration: 2,
+    ease: "sine.inOut",
+    yoyo: true,
+    repeat: -1,
+    delay: 0.8,
+  });
+}
 
-gsap.to("#hero-img", {
-  y: -10, duration: 2,
-  ease: "sine.inOut", // sine.inOut: smooth endless oscillation, no jerk
-  yoyo: true, repeat: -1, delay: 0.8
-});
+if (replayBtn) {
+  replayBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => heroTL.restart(), 350);
+  });
+}
 
+const revealBlocks = gsap.utils.toArray(".reveal, .anim-title, .anim-sub, .anim-cards");
+revealBlocks.forEach((el) => {
+  const target = el.querySelectorAll ? el.querySelectorAll(".card") : [];
+  if (target.length) {
+    gsap.from(target, {
+      scrollTrigger: { trigger: el, start: "top 86%", toggleActions: "play none none none" },
+      y: 35,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.09,
+      ease: "back.out(1.3)",
+    });
+    return;
+  }
 
-document.getElementById("replay-btn").addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  setTimeout(() => heroTL.restart(), 350);
-});
-
-
-gsap.utils.toArray(".anim-title").forEach(el => {
   gsap.from(el, {
-    scrollTrigger: { trigger: el, start: "top 86%", toggleActions: "play none none none" },
-    y: 24, opacity: 0, duration: 0.6,
-    ease: "power2.out" // power2.out: gentle text reveal
+    scrollTrigger: { trigger: el, start: "top 80%", toggleActions: "play none none reverse" },
+    y: 24,
+    opacity: 0,
+    duration: 0.6,
+    ease: "power2.out",
   });
 });
 
-gsap.utils.toArray(".anim-sub").forEach(el => {
-  gsap.from(el, {
-    scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" },
-    y: 16, opacity: 0, duration: 0.5, delay: 0.08,
-    ease: "power2.out"
-  });
-});
-
-
-gsap.utils.toArray(".anim-cards").forEach(group => {
-  gsap.from(group.querySelectorAll(".card"), {
-    scrollTrigger: { trigger: group, start: "top 86%", toggleActions: "play none none none" },
-    y: 35, opacity: 0, duration: 0.5, stagger: 0.09,
-    ease: "back.out(1.3)" // back.out: subtle pop-in overshoot on cards
-  });
-});
-
-gsap.from(".anim-form", {
-  scrollTrigger: { trigger: ".anim-form", start: "top 86%", toggleActions: "play none none none" },
-  y: 30, opacity: 0, duration: 0.6,
-  ease: "power2.out"
-});
-
-
-document.querySelectorAll(".menu-card").forEach(card => {
-  card.addEventListener("mouseenter", () =>
-    gsap.to(card, { y: -4, duration: 0.2, ease: "power2.out" })
+if (progressBar) {
+  gsap.fromTo(
+    progressBar,
+    { scaleX: 0 },
+    {
+      scaleX: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+      },
+    }
   );
-  card.addEventListener("mouseleave", () =>
-    gsap.to(card, { y: 0,  duration: 0.2, ease: "power2.inOut" })
-  );
-});
-
-/* ── B1: Dark mode — classList.toggle("dark") on <html> ── */
-const themeToggle = document.getElementById("theme-toggle");
-const iconSun     = document.getElementById("icon-sun");
-const iconMoon    = document.getElementById("icon-moon");
-const html        = document.documentElement;
+}
 
 function applyTheme(dark) {
-  if (dark) {
-    html.classList.add("dark");
-    iconSun.classList.remove("hidden");
-    iconMoon.classList.add("hidden");
-  } else {
-    html.classList.remove("dark");
-    iconSun.classList.add("hidden");
-    iconMoon.classList.remove("hidden");
+  html.classList.toggle("dark", Boolean(dark));
+
+  const sunIcon = document.getElementById("icon-sun");
+  const moonIcon = document.getElementById("icon-moon");
+
+  if (sunIcon) {
+    sunIcon.classList.toggle("hidden", !dark);
+  }
+  if (moonIcon) {
+    moonIcon.classList.toggle("hidden", dark);
   }
 }
 
-// Restore saved preference on load
-applyTheme(localStorage.getItem("theme") === "dark");
+if (darkModeToggle) {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(savedTheme ? savedTheme === "dark" : prefersDark);
 
-themeToggle.addEventListener("click", () => {
-  const isDark = !html.classList.contains("dark");
-  applyTheme(isDark);
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  gsap.fromTo(themeToggle,
-    { rotation: 0 },
-    { rotation: 360, duration: 0.45, ease: "back.out(1.5)" }
-  );
-});
+  darkModeToggle.addEventListener("click", () => {
+    const isDark = !html.classList.contains("dark");
+    applyTheme(isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
 
-/* ── Header shadow on scroll ── */
-ScrollTrigger.create({
-  start: "top -40",
-  onEnter:     () => document.getElementById("site-header").classList.add("shadow-sm"),
-  onLeaveBack: () => document.getElementById("site-header").classList.remove("shadow-sm")
+    gsap.fromTo(
+      darkModeToggle,
+      { rotation: 0 },
+      { rotation: 360, duration: 0.45, ease: "back.out(1.5)" }
+    );
+  });
+}
+
+if (siteHeader) {
+  ScrollTrigger.create({
+    start: "top -40",
+    onEnter: () => siteHeader.classList.add("shadow-sm"),
+    onLeaveBack: () => siteHeader.classList.remove("shadow-sm"),
+  });
+}
+
+document.querySelectorAll(".menu-card").forEach((card) => {
+  card.addEventListener("mouseenter", () => {
+    gsap.to(card, { y: -4, duration: 0.2, ease: "power2.out" });
+  });
+
+  card.addEventListener("mouseleave", () => {
+    gsap.to(card, { y: 0, duration: 0.2, ease: "power2.inOut" });
+  });
 });

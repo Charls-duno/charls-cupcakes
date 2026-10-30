@@ -26,12 +26,12 @@
             <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">Charls <span class="text-pink-500">Cupcakes</span></h1>
             <div class="flex gap-2">
                 <button id="replayBtn" class="btn-primary text-xs px-4 py-1.5">Replay</button>
-                <button id="darkModeToggle" class="btn-primary text-xs px-4 py-1.5">Dark Mode</button>
+                <button id="theme-toggle" class="btn-primary text-xs px-4 py-1.5">Dark Mode</button>
             </div>
         </div>
 
-        <header>
-            <nav class="flex items-center justify-between py-4 max-[600px]:flex-col max-[600px]:gap-4">
+        <header id="site-header">
+            <nav id="nav-links" class="flex items-center justify-between py-4 max-[600px]:flex-col max-[600px]:gap-4">
                 <span class="text-sm text-pink-400 font-medium">@charls-cupcakes</span>
                 <ul class="m-0 flex list-none gap-6 p-0 max-[600px]:flex-col max-[600px]:text-center">
                     <li><a class="text-sm transition-colors duration-500 hover:text-pink-500" href="#hero">Hero</a></li>
@@ -48,9 +48,9 @@
             <section id="hero" class="reveal min-h-[60vh] flex flex-col md:flex-row items-center justify-between gap-12">
                 <div class="flex-1 text-left">
                     <p class="text-xs uppercase tracking-widest text-pink-400 mb-3">est. 2024 · handcrafted daily</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white leading-tight mb-4">Baked with <span class="text-pink-500">Love</span>,<br>Frosted with Joy</h2>
-                    <p class="text-zinc-500 dark:text-zinc-400 mb-6 max-w-sm">Handcrafted cupcakes made fresh every morning — no preservatives, no shortcuts, just pure flavor.</p>
-                    <div class="flex gap-3 flex-wrap">
+                    <h2 id="hero-title" class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white leading-tight mb-4">Baked with <span class="text-pink-500">Love</span>,<br>Frosted with Joy</h2>
+                    <p id="hero-tagline" class="text-zinc-500 dark:text-zinc-400 mb-6 max-w-sm">Handcrafted cupcakes made fresh every morning — no preservatives, no shortcuts, just pure flavor.</p>
+                    <div id="hero-cta" class="flex gap-3 flex-wrap">
                         <a href="#menu" class="btn-primary text-sm">Browse Our Menu</a>
                         <a href="#contact" class="btn-primary text-sm">Order Now</a>
                     </div>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="flex-1 flex justify-center">
-                    <div class="w-48 h-48 rounded-full bg-pink-50 dark:bg-zinc-900 border border-pink-100 dark:border-zinc-800 flex items-center justify-center">
+                    <div id="hero-img" class="w-48 h-48 rounded-full bg-pink-50 dark:bg-zinc-900 border border-pink-100 dark:border-zinc-800 flex items-center justify-center">
                         <svg class="w-24 h-24 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 11h16l-2 9H6L4 11z"/>
                             <path d="M6 11c0-3.5 2-5 6-5s6 1.5 6 5"/>
@@ -278,51 +278,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-
-    <script>
-        const darkModeToggle = document.querySelector("#darkModeToggle");
-        darkModeToggle.addEventListener("click", function () {
-            document.documentElement.classList.toggle("dark");
-        });
-
-        const tl = gsap.timeline({ defaults: { duration: 0.8, ease: "power2.out" } });
-
-        tl.from("h1", { y: -40, opacity: 0 })
-            .from("nav a", { y: -20, opacity: 0, stagger: 0.15 }, "-=0.4")
-
-        const replayBtn = document.querySelector("#replayBtn");
-        replayBtn.addEventListener("click", function () {
-            tl.restart();
-        });
-
-        gsap.registerPlugin(ScrollTrigger);
-        const reveals = gsap.utils.toArray(".reveal");
-        reveals.forEach(function (sec) {
-            gsap.from(sec, {
-                y: 50,
-                opacity: 0,
-                duration: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: sec,
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
-            });
-        });
-
-        gsap.fromTo('#progressBar',
-        { scaleX: 0 },
-        {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: true,
-            }
-        });
-    </script>
+    <script src="./script.js"></script>
 </body>
 </html>
